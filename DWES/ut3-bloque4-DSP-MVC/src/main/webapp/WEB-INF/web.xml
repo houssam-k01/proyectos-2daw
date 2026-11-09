@@ -7,7 +7,7 @@
     <display-name>UT3 Bloque 4 - JSP Y MVC</display-name>
 
     <welcome-file-list>
-        <welcome-file>saludo</welcome-file>
+        <welcome-file>perfil</welcome-file>
     </welcome-file-list>
 
     <error-page>

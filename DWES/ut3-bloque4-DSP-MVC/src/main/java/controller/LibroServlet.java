@@ -14,6 +14,7 @@ import model.Libro;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 @WebServlet("/libros")
 public class LibroServlet extends HttpServlet {
@@ -86,8 +87,9 @@ public class LibroServlet extends HttpServlet {
 
     private void listar(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
-    	request.setAttribute("libros", libroDAO.findAll());
-    	forward(request, response, "/WEB-INF/views/libros.jsp");
+    	List<Libro> libros = libroDAO.findAll();
+    	request.setAttribute("libros", libros);
+    	forward(request, response, "/WEB-INF/views/practica05/libros.jsp");
     }
 
     private void detalle(HttpServletRequest request, HttpServletResponse response)
@@ -95,13 +97,13 @@ public class LibroServlet extends HttpServlet {
         // TODO C2: lee el id, busca el libro, controla null con 404,
         // publica "libro" y haz forward a libro-detalle.jsp.
     	int id = Integer.parseInt(request.getParameter("id"));
-    	Libro libro= libroDAO.findById(id);
-    	if(libro==null) {
-    		response.sendError(HttpServletResponse.SC_NOT_FOUND, "No se encontro el libro con id: ");
+    	Libro libro = libroDAO.findById(id);
+    	if (libro == null) {
+    		response.sendError(HttpServletResponse.SC_NOT_FOUND, "No se encontro el libro con id: " + id);
     		return;
     	}
     	request.setAttribute("libro", libro);
-        forward(request, response, "/WEB-INF/views/libro-detalle.jsp");
+        forward(request, response, "/WEB-INF/views/practica04/libro-detalle.jsp");
     }
 
     private void mostrarFormularioNuevo(HttpServletRequest request, HttpServletResponse response)
@@ -110,7 +112,7 @@ public class LibroServlet extends HttpServlet {
     	request.setAttribute("autores", autorDAO.findAll());
     	request.setAttribute("categorias", categoriaDAO.findAll());
     	request.setAttribute("modo", "crear");
-    	forward(request, response, "/WEB-INF/views/libro-formulario.jsp");
+    	forward(request, response, "/WEB-INF/views/practica06/libro-formulario.jsp");
     }
 
     private void mostrarFormularioEditar(HttpServletRequest request, HttpServletResponse response)

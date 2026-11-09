@@ -1,0 +1,475 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Chuleta RA01 Despliegue</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: una columna de apuntes con índice fijo arriba; bloques "examen" marcados con tinta de subrayador */
+:root{
+  --bg:#f6f7f4; --paper:#ffffff; --ink:#1d2421; --muted:#5d6863; --line:#d9dfdb;
+  --accent:#0f6e64; --accent-soft:#dcefeb; --mark:#fff1a8; --ok:#2f7d3b; --okbg:#e3f3e2; --bad:#b3362c; --badbg:#fbe6e3;
+  --code:#eef1ee;
+  --f-display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#151a18; --paper:#1d2421; --ink:#e7ece9; --muted:#9aa6a0; --line:#334039;
+  --accent:#5cc7b8; --accent-soft:#1f3a36; --mark:#5a4f12; --ok:#7fcf88; --okbg:#1f3523; --bad:#f08a80; --badbg:#3d2220; --code:#232c29; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#151a18; --paper:#1d2421; --ink:#e7ece9; --muted:#9aa6a0; --line:#334039;
+  --accent:#5cc7b8; --accent-soft:#1f3a36; --mark:#5a4f12; --ok:#7fcf88; --okbg:#1f3523; --bad:#f08a80; --badbg:#3d2220; --code:#232c29; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:860px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(30px,6vw,46px);font-weight:800;letter-spacing:-.01em}
+h2{font-size:clamp(23px,4vw,30px);font-weight:800;margin-bottom:14px}
+h3{font-size:19px;font-weight:600;margin:22px 0 8px}
+p{margin:0 0 12px}
+header.top{padding-block:36px 18px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.lead{color:var(--muted);max-width:62ch;margin-top:10px}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);
+  display:flex;gap:6px;overflow-x:auto;padding-block:10px;margin-bottom:8px}
+nav.toc a{flex:none;font-family:var(--f-mono);font-size:13px;color:var(--ink);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:5px 12px;background:var(--paper)}
+nav.toc a:hover,nav.toc a:focus-visible{border-color:var(--accent);color:var(--accent);outline:none}
+section{padding-block:30px 6px;border-bottom:1px solid var(--line);scroll-margin-top:60px}
+ul,ol{margin:0 0 12px;padding-left:22px}
+li{margin-bottom:4px}
+mark{background:var(--mark);color:inherit;padding:0 2px;border-radius:2px}
+code{font-family:var(--f-mono);font-size:.86em;background:var(--code);padding:1px 5px;border-radius:4px}
+pre{font-family:var(--f-mono);font-size:14px;line-height:1.5;background:var(--code);border:1px solid var(--line);border-radius:8px;padding:12px 14px;overflow-x:auto;margin:0 0 14px}
+pre .c{color:var(--muted)}
+.tablebox{overflow-x:auto;margin:0 0 16px;border:1px solid var(--line);border-radius:8px;background:var(--paper)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:15px}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{font-family:var(--f-display);font-weight:600;background:var(--accent-soft)}
+tr:last-child td{border-bottom:0}
+.exam{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:8px;padding:12px 16px;margin:0 0 16px}
+.exam b.tag{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:4px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:14px}
+.grid2>div{min-width:0;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.grid2 h4{font-family:var(--f-display);font-size:16px;margin:0 0 6px}
+.cheat{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}
+.cheat div{min-width:0;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:15.5px}
+.cheat strong{font-family:var(--f-display)}
+/* test */
+.q{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:12px}
+.q .qt{font-weight:600;margin-bottom:8px}
+.q .num{font-family:var(--f-mono);color:var(--accent);margin-right:6px}
+.opts{display:grid;gap:6px}
+.opts button{font:inherit;font-size:15.5px;text-align:left;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:8px 11px;cursor:pointer}
+.opts button:hover:not(:disabled){border-color:var(--accent)}
+.opts button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.opts button:disabled{cursor:default}
+.opts button.ok{background:var(--okbg);border-color:var(--ok);color:var(--ink)}
+.opts button.bad{background:var(--badbg);border-color:var(--bad);color:var(--ink)}
+.why{margin-top:8px;font-size:15px;color:var(--muted)}
+.score{position:sticky;bottom:12px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+  background:var(--ink);color:var(--bg);border-radius:10px;padding:10px 14px;margin-top:10px;font-family:var(--f-mono);font-size:14px}
+.score button{font:inherit;background:var(--bg);color:var(--ink);border:0;border-radius:6px;padding:6px 12px;cursor:pointer}
+details{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin-bottom:10px}
+summary{cursor:pointer;font-weight:600}
+summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+details[open] summary{margin-bottom:8px}
+.small{font-size:14px;color:var(--muted)}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow">Despliegue de Aplicaciones Web · RA01</div>
+  <h1>Implantación de arquitecturas web</h1>
+  <p class="lead">Todo el tema en apuntes cortos, más un test que se corrige solo, preguntas cortas con su respuesta y lo que te pueden pedir escribir a mano. Lo subrayado en amarillo es lo que más cae.</p>
+</header>
+
+<nav class="toc" aria-label="Secciones">
+  <a href="#chuleta">Chuleta</a><a href="#app">App web</a><a href="#doc">Documentar</a><a href="#modelos">Modelos</a>
+  <a href="#http">HTTP/HTTPS</a><a href="#servidores">Servidores</a><a href="#virtual">VMs y Docker</a>
+  <a href="#codigo">Código a mano</a><a href="#test">Test</a><a href="#cortas">Preg. cortas</a>
+</nav>
+
+<section id="chuleta">
+  <h2>Chuleta de 2 minutos</h2>
+  <div class="cheat">
+    <div><strong>3 capas:</strong> Cliente (navegador) · Negocio (lógica) · Datos (BD, XML, texto).</div>
+    <div><strong>3 modelos:</strong> Monolítico (todo junto) · Cliente-Servidor (dos partes) · Microservicios (muchos servicios + API Gateway, cada uno con su BD).</div>
+    <div><strong>Partes de una app:</strong> código fuente (front + back), estáticos, configuración, dependencias.</div>
+    <div><strong>5 requerimientos de implantación:</strong> runtime, servidor web/apps + puertos, BD, gestor de dependencias, variables de entorno.</div>
+    <div><strong>HTTP:</strong> <mark>sin estado (stateless)</mark>. Petición = método + URL + versión + cabeceras + cuerpo. Respuesta = código + mensaje + cabeceras + cuerpo.</div>
+    <div><strong>Códigos:</strong> 2xx éxito (200) · 3xx redirección (301) · 4xx cliente (403, 404) · 5xx servidor (500).</div>
+    <div><strong>HTTPS</strong> = HTTP sobre <mark>TLS/SSL</mark>. Handshake + certificado. Da confidencialidad, integridad y autenticidad.</div>
+    <div><strong>Servidor web</strong> (Apache, Nginx) = estático. <strong>Servidor de aplicaciones</strong> (Tomcat, Node, Gunicorn, PHP-FPM) = dinámico.</div>
+    <div><strong>VM:</strong> SO completo propio, hipervisor, aislamiento total, pesada y lenta.</div>
+    <div><strong>Contenedor:</strong> <mark>comparte el kernel del host</mark>, ligero, arranca en segundos, menos aislamiento.</div>
+    <div><strong>Docker:</strong> Dockerfile (instrucciones) → Imagen (plantilla inmutable) → Contenedor (instancia en ejecución).</div>
+    <div><strong>Nube:</strong> VMs y servicios alquilados en AWS, Google Cloud (GCP), Azure. Pago por uso, escalar en minutos.</div>
+  </div>
+</section>
+
+<section id="app">
+  <h2>1. Estructura de una aplicación web</h2>
+  <p>El problema típico es el <mark>"¡en mi máquina sí funcionaba!"</mark>: la app no arranca en el servidor porque <strong>no se ha definido bien el entorno</strong>. Una app web no es un <code>.exe</code>, es un conjunto de componentes que trabajan juntos.</p>
+  <h3>Las 4 partes de una app web</h3>
+  <div class="tablebox"><table>
+    <tr><th>Parte</th><th>Qué es</th><th>Ejemplo</th></tr>
+    <tr><td><strong>Código fuente</strong></td><td><strong>Frontend</strong>: lo que el usuario ve (HTML, CSS, JS).<br><strong>Backend</strong>: el motor oculto (Java, PHP, Python, Node.js) que valida logins, procesa pagos, usa la BD.</td><td>El HTML de la lista de tareas / el código que guarda las tareas en la BD.</td></tr>
+    <tr><td><strong>Archivos estáticos</strong></td><td>No cambian con la lógica y suelen pesar: imágenes, vídeos, PDF, fuentes, CSS base.</td><td>El logo de Netflix.</td></tr>
+    <tr><td><strong>Archivos de configuración</strong></td><td>Dicen cómo se comporta la app <mark>sin tocar el código</mark>: credenciales de BD, variables de entorno, puertos y rutas del servidor, config del framework (Django, Spring).</td><td><code>server.xml</code>, <code>.env</code></td></tr>
+    <tr><td><strong>Dependencias / librerías</strong></td><td>Código de terceros para no "reinventar la rueda". Backend: npm, pip, Maven, Composer. Frontend: jQuery, Moment.js.</td><td>El driver de MySQL para Java.</td></tr>
+  </table></div>
+
+  <h3>Los 5 requerimientos de implantación</h3>
+  <ol>
+    <li><strong>Entorno de ejecución (runtime)</strong>: el software base. Java → JRE/JDK; Node.js → intérprete de Node. "Es el corazón del sistema".</li>
+    <li><strong>Servidor web y/o de aplicaciones</strong>: cuál y en qué puertos (Apache para estáticos, Tomcat para Java; 80, 8080).</li>
+    <li><strong>Base de datos</strong>: motor exacto (MySQL 8.0, MongoDB), IP de conexión, usuario y contraseña propios de la app.</li>
+    <li><strong>Gestor de dependencias</strong>: npm (Node), Composer (PHP), Maven (Java) instalados en el servidor.</li>
+    <li><strong>Variables de entorno</strong>: <mark>¡crítico!</mark> Claves API y modo desarrollo/producción. Cambian según el entorno y <strong>no deben ir en el código</strong> (seguridad).</li>
+  </ol>
+  <div class="exam"><b class="tag">Truco para el test</b>Si preguntan dónde van las claves API o contraseñas: en <strong>variables de entorno</strong>, nunca escritas en el código fuente.</div>
+</section>
+
+<section id="doc">
+  <h2>2. Documentar los procesos</h2>
+  <p>La documentación es la <strong>memoria colectiva</strong> del equipo: sirve cuando termina un proyecto, cuando un compañero coge el relevo o cuando hay que repetir un despliegue meses después.</p>
+  <h3>¿Por qué documentar? (3 motivos)</h3>
+  <ol>
+    <li><strong>Equipo y colaboración</strong>: transferir conocimiento, que cualquiera entienda el despliegue.</li>
+    <li><strong>Mantenimiento y resolución de problemas</strong>: diagnosticar rápido y mantener el servicio.</li>
+    <li><strong>Escalabilidad y futuras mejoras</strong>: replicar entornos, migrar, montar servidores nuevos.</li>
+  </ol>
+  <h3>Elementos de una buena documentación (5)</h3>
+  <p>Tiene que ser <strong>clara, precisa y completa</strong>:</p>
+  <ul>
+    <li><strong>Prerrequisitos de hardware y red</strong>: RAM, CPU, disco y puertos a abrir en el firewall (ej. 8088).</li>
+    <li><strong>Comandos exactos</strong> literales, paso a paso (ej. <code>sudo apt install docker.io</code>).</li>
+    <li><strong>Rutas y cambios de configuración</strong>: dónde está el archivo (ej. <code>server.xml</code>) y el <mark>"antes" y "después"</mark>.</li>
+    <li><strong>Capturas de hitos</strong>: ej. la consola con "active (running)".</li>
+    <li><strong>Troubleshooting</strong>: errores comunes y su solución.</li>
+  </ul>
+</section>
+
+<section id="modelos">
+  <h2>3. Arquitecturas web y modelos</h2>
+  <h3>Las 3 capas</h3>
+  <ul>
+    <li><strong>Capa cliente</strong>: el navegador del usuario, la interfaz.</li>
+    <li><strong>Capa de negocio</strong>: la lógica y las reglas de negocio a las que accede el cliente.</li>
+    <li><strong>Capa de datos</strong>: almacenamiento (gestores de BD relacionales, ficheros XML o texto plano).</li>
+  </ul>
+
+  <div class="grid2">
+    <div><h4>Monolítico: "todo en uno"</h4><p class="small">Todo (interfaz, lógica, datos) empaquetado y desplegado <strong>como una única unidad</strong>. "Una casa de una sola habitación". Si hay que escalar o actualizar algo, se hace con <strong>toda</strong> la app.</p></div>
+    <div><h4>Cliente-Servidor</h4><p class="small">Dos partes: el <strong>cliente</strong> (navegador o app móvil) pide y el <strong>servidor</strong> (lógica + datos) responde. "Un restaurante: tú pides, la cocina prepara".</p></div>
+    <div><h4>Microservicios</h4><p class="small">Muchas apps pequeñas e independientes, cada una con su lógica y <strong>su propia BD</strong>. El usuario entra por un <mark>API Gateway</mark> que reparte las peticiones. "Una orquesta, cada músico con su partitura".</p></div>
+  </div>
+
+  <div class="tablebox"><table>
+    <tr><th>Modelo</th><th>Ventajas</th><th>Desventajas</th></tr>
+    <tr><td><strong>Monolítico</strong></td>
+      <td>Sencillez inicial (equipos pequeños)<br>Menos complejidad operativa (un solo artefacto)<br>Comunicación interna directa, sin red (más rápida)</td>
+      <td>Escalabilidad limitada (escalas todo)<br><mark>Acoplamiento alto</mark> (un cambio afecta a todo)<br>Difícil de mantener al crecer<br>Barrera tecnológica (un solo lenguaje)</td></tr>
+    <tr><td><strong>Cliente-Servidor</strong></td>
+      <td>Separación de responsabilidades<br>Escalabilidad independiente (cliente o servidor)<br>Flexibilidad tecnológica (cada parte su tecnología)<br>Seguridad centralizada en el servidor</td>
+      <td>Dependencia de la red (latencia)<br>Complejidad de desarrollo (comunicación, sincronización)<br>Manejo del estado de la sesión</td></tr>
+    <tr><td><strong>Microservicios</strong></td>
+      <td>Escalabilidad independiente por servicio<br>Desarrollo independiente (equipos pequeños)<br>Flexibilidad tecnológica<br><mark>Resiliencia</mark>: si uno falla, no cae toda la app</td>
+      <td>Complejidad operacional (gestionar y monitorizar muchos)<br>Comunicación distribuida (red más lenta y con fallos)<br>Consistencia de datos entre varias BD<br>Más latencia</td></tr>
+  </table></div>
+  <div class="exam"><b class="tag">Ojo</b>"Si el servicio de Pedidos está saturado, se escala solo ese" → <strong>microservicios</strong>. "Comunicación sin red entre componentes" → <strong>monolítico</strong>. "Seguridad centralizada" → <strong>cliente-servidor</strong>.</div>
+</section>
+
+<section id="http">
+  <h2>4. Protocolos: HTTP y HTTPS</h2>
+  <p><strong>HTTP</strong> (HyperText Transfer Protocol) es el "idioma" de la web: las reglas de cómo se formatean y envían los mensajes entre cliente y servidor. Escribes una URL → el navegador manda una <strong>petición GET</strong> → el servidor busca el recurso y lo devuelve en una <strong>respuesta</strong>.</p>
+  <div class="exam"><b class="tag">Clave</b>HTTP es <strong>sin estado (stateless)</strong>: cada petición es independiente y el servidor "olvida" las anteriores ("taquillero de cine con mala memoria"). Para que Instagram "te recuerde" se usan <strong>cookies y sesiones</strong> (la cabecera <code>Set-Cookie</code> de la respuesta).</div>
+
+  <div class="grid2">
+    <div><h4>Petición HTTP</h4>
+      <ul class="small">
+        <li><strong>Método</strong>: GET (pedir), POST (enviar, ej. formulario), PUT/PATCH (actualizar), DELETE (borrar)</li>
+        <li><strong>URL</strong>: dirección del recurso</li>
+        <li><strong>Versión</strong>: HTTP/1.1, HTTP/2</li>
+        <li><strong>Cabeceras</strong>: User-Agent, Accept-Language, Authorization</li>
+        <li><strong>Cuerpo</strong> (opcional): datos, se usa con POST/PUT</li>
+      </ul></div>
+    <div><h4>Respuesta HTTP</h4>
+      <ul class="small">
+        <li><strong>Código de estado</strong> (3 cifras)</li>
+        <li><strong>Mensaje de estado</strong> (ej. "OK")</li>
+        <li><strong>Cabeceras</strong>: Content-Type, Content-Length, Set-Cookie</li>
+        <li><strong>Cuerpo</strong>: HTML, JSON, imagen...</li>
+      </ul></div>
+  </div>
+  <div class="tablebox"><table>
+    <tr><th>Familia</th><th>Significa</th><th>Ejemplos que tienes que saber</th></tr>
+    <tr><td>2xx</td><td>Éxito</td><td><strong>200 OK</strong></td></tr>
+    <tr><td>3xx</td><td>Redirección</td><td><strong>301 Moved Permanently</strong></td></tr>
+    <tr><td>4xx</td><td>Error del <strong>cliente</strong></td><td><strong>404 Not Found</strong>, <strong>403 Forbidden</strong> (sin permiso; el que te salió en los ejemplos de Tomcat)</td></tr>
+    <tr><td>5xx</td><td>Error del <strong>servidor</strong></td><td><strong>500 Internal Server Error</strong></td></tr>
+  </table></div>
+
+  <h3>HTTPS</h3>
+  <p>En HTTP todo va en <strong>texto plano</strong>: en una wifi pública (ej. aeropuerto) un programa "sniffer" puede leerlo. <mark>HTTPS no es un protocolo nuevo</mark>: es HTTP sobre una capa de seguridad <strong>TLS/SSL</strong>. Al conectar, cliente y servidor hacen un <strong>handshake TLS</strong>: negocian el cifrado y verifican al servidor con un <strong>certificado digital</strong>. Ejemplo de la postal: HTTPS es meter la postal en una caja fuerte.</p>
+  <ul>
+    <li><strong>Confidencialidad</strong>: el cifrado impide leer los datos interceptados.</li>
+    <li><strong>Integridad</strong>: los datos no se han modificado por el camino.</li>
+    <li><strong>Autenticidad</strong>: el certificado confirma que el servidor es quien dice ser (evita suplantaciones).</li>
+  </ul>
+  <p>Se ve con el <strong>candado</strong> y <code>https://</code>. Si una web te pide la tarjeta o el DNI <strong>sin HTTPS</strong>: no metas los datos y sal. Puertos por defecto: <strong>HTTP 80</strong>, <strong>HTTPS 443</strong>.</p>
+</section>
+
+<section id="servidores">
+  <h2>5. Servidor web vs servidor de aplicaciones</h2>
+  <div class="tablebox"><table>
+    <tr><th></th><th>Servidor web</th><th>Servidor de aplicaciones</th></tr>
+    <tr><td>Sirve</td><td>Contenido <strong>estático</strong> (HTML, CSS, JS del cliente, imágenes, PDF). No cambia salvo que lo edites a mano.</td><td>Contenido <strong>dinámico</strong>: ejecuta código, consulta la BD y genera una respuesta para cada usuario.</td></tr>
+    <tr><td>Puntos fuertes</td><td>Muy rápido, usa <strong>caché</strong>, muchos usuarios a la vez. <strong>Bajos requerimientos</strong>: no necesita runtime de un lenguaje.</td><td>"El cerebro de la lógica de negocio": logins, saldo del banco, formularios.</td></tr>
+    <tr><td>Ejemplos</td><td><strong>Apache HTTP Server, Nginx</strong></td><td><strong>Tomcat</strong> (Java: servlets, JSP) · <strong>Node.js</strong> (Express, NestJS) · <strong>Gunicorn/uWSGI</strong> (Python: Django, Flask) · <strong>PHP-FPM</strong> (WordPress, Laravel)</td></tr>
+    <tr><td>Puerto típico</td><td>80 (443 con HTTPS)</td><td>Tomcat: 8080</td></tr>
+  </table></div>
+  <p>A menudo el servidor web hace de <mark>proxy</mark>: recibe la petición y, si es dinámica, se la pasa al servidor de aplicaciones.</p>
+  <div class="exam"><b class="tag">Pregunta de reflexión del tema</b><strong>¿Solo servidor de aplicaciones para todo (también imágenes y CSS)?</strong> Funcionaría, pero gastaría recursos del runtime en archivos que no necesitan lógica y sería más lento.<br><strong>¿Solo servidor web para una app dinámica como un foro?</strong> No funcionaría: no puede ejecutar la lógica (login, guardar mensajes, BD). Por eso se combinan los dos.</div>
+</section>
+
+<section id="virtual">
+  <h2>6. Virtualización: VMs, nube y contenedores</h2>
+  <p>Todo esto busca resolver el <strong>"funciona en mi máquina, pero no en la tuya"</strong>.</p>
+  <h3>Máquinas virtuales</h3>
+  <p>Un ordenador completo dentro de otro: <strong>su propio SO</strong>, RAM, disco y CPU virtuales. Se gestionan con <strong>VirtualBox o VMware</strong>, y quien las gestiona es el <strong>hipervisor</strong>. Las empresas meten cientos de servidores virtuales en pocas máquinas físicas.</p>
+  <div class="tablebox"><table>
+    <tr><th>Ventajas VM</th><th>Desventajas VM</th></tr>
+    <tr><td><mark>Aislamiento total</mark> (si una falla no afecta a las demás)<br>Independencia del SO (Linux dentro de Windows)<br>Portabilidad entre hosts<br>Recursos garantizados (RAM/CPU asignada)</td>
+        <td>Alto consumo (un SO completo por VM)<br>Arranque lento (como encender un PC)<br>Grandes y pesadas (varios GB)<br>Sobrecarga del hipervisor</td></tr>
+  </table></div>
+  <h3>La nube</h3>
+  <p>Normalmente son VMs en centros de datos de <strong>Amazon (AWS), Google (GCP) o Microsoft (Azure)</strong>. Se alquilan por horas o minutos, se escalan o apagan según la necesidad, sin comprar hardware. Además hay almacenamiento, BD gestionadas, redes... Netflix o Spotify la usan para picos (Black Friday, estrenos) y <strong>pagan solo lo que usan</strong>.</p>
+  <h3>Contenedores</h3>
+  <p>Si una VM es un apartamento completo, un contenedor es una <strong>caja estandarizada y ligera</strong>: solo el código, librerías, dependencias y configuración. <mark>No llevan un SO completo: comparten el kernel del SO del host.</mark></p>
+  <div class="tablebox"><table>
+    <tr><th>Ventajas contenedores</th><th>Desventajas contenedores</th></tr>
+    <tr><td>Extremadamente ligeros (arrancan en segundos)<br>Portabilidad total<br>Consistencia del entorno (adiós al "en mi máquina funciona")<br>Escalabilidad rápida (cientos en una máquina)<br>Desarrollo ágil (CI/CD)</td>
+        <td><mark>Menor aislamiento que las VMs</mark> (comparten kernel)<br>Dependencia del SO del host (un contenedor Linux no va directo en Windows sin una VM ligera, por eso Docker Desktop usa WSL2)<br>Curva de aprendizaje</td></tr>
+  </table></div>
+  <h3>Docker</h3>
+  <p>La plataforma más popular, el <strong>estándar de facto</strong> (no la única).</p>
+  <ul>
+    <li><strong>Dockerfile</strong>: archivo de texto con las instrucciones para construir una imagen.</li>
+    <li><strong>Imagen</strong>: plantilla <strong>inmutable</strong> con todo lo necesario para ejecutar la app.</li>
+    <li><strong>Contenedor</strong>: una <strong>instancia ejecutable</strong> de una imagen. De una imagen salen muchos contenedores.</li>
+  </ul>
+  <div class="exam"><b class="tag">Pregunta del tema</b><strong>¿Qué ventaja tiene que me pasen una imagen Docker en vez del código?</strong> La imagen ya trae el runtime, las dependencias y la configuración, así que funciona igual en mi equipo sin instalar nada más que Docker. Con el código fuente tendría que montar yo todo el entorno.</div>
+</section>
+
+<section id="codigo">
+  <h2>7. Código y comandos que te pueden pedir a mano</h2>
+  <p class="small">Sale de los talleres (Apache, Tomcat y Docker en Linux y Windows). No hace falta memorizar todo: con saber qué comando hace qué y qué archivo se toca para el puerto, vas bien.</p>
+
+  <h3>Apache en Linux (Ubuntu)</h3>
+<pre><span class="c"># instalar y ver estado</span>
+sudo apt update
+sudo apt install apache2
+sudo systemctl status apache2
+sudo systemctl restart apache2      <span class="c"># start / stop / restart / enable</span>
+
+<span class="c"># puerto  ->  /etc/apache2/ports.conf</span>
+Listen 8088
+
+<span class="c"># sitio   ->  /etc/apache2/sites-available/000-default.conf</span>
+&lt;VirtualHost *:8088&gt;
+    DocumentRoot /var/www/personal
+&lt;/VirtualHost&gt;
+
+sudo apache2ctl configtest          <span class="c"># comprueba la sintaxis -&gt; Syntax OK</span>
+sudo ufw allow 8088/tcp             <span class="c"># abrir el puerto en el cortafuegos</span>
+curl http://localhost:8088          <span class="c"># probar</span></pre>
+  <p class="small">Carpeta web por defecto: <code>/var/www/html</code>. Usuario de Apache: <code>www-data</code>.</p>
+
+  <h3>Apache en Windows</h3>
+<pre><span class="c"># archivo: C:\Apache24\conf\httpd.conf</span>
+Define SRVROOT "C:/Apache24"
+Listen 80
+DocumentRoot "${SRVROOT}/htdocs"
+
+httpd.exe -k install      <span class="c"># instalar como servicio (cmd como administrador)</span>
+httpd.exe -k start
+httpd.exe -t              <span class="c"># comprobar la configuración</span></pre>
+  <p class="small">Necesita el Visual C++ Redistributable (VC_redist) instalado.</p>
+
+  <h3>Tomcat (Linux y Windows)</h3>
+<pre><span class="c"># necesita Java (JDK) -&gt; variable JAVA_HOME</span>
+<span class="c"># Linux: bin/setenv.sh</span>
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+<span class="c"># Windows: Variables de entorno del sistema -&gt; JAVA_HOME = C:\Program Files\Java\jdk-21</span>
+
+<span class="c"># puerto -&gt; conf/server.xml  (por defecto 8080)</span>
+&lt;Connector port="9090" protocol="HTTP/1.1"
+           connectionTimeout="20000"
+           redirectPort="8443" /&gt;
+
+<span class="c"># arrancar / parar</span>
+./bin/startup.sh     ./bin/shutdown.sh      <span class="c"># Linux</span>
+bin\startup.bat      bin\shutdown.bat       <span class="c"># Windows</span>
+
+<span class="c"># log de arranque</span>
+logs/catalina.out   -&gt;  "Server startup in ... milliseconds"</pre>
+  <p class="small">Usuarios del Manager: <code>conf/tomcat-users.xml</code>. Las apps se despliegan en <code>webapps/</code> (un <code>.war</code> se descomprime solo).</p>
+
+  <h3>Docker</h3>
+<pre><span class="c"># instalar en Ubuntu y usarlo sin sudo</span>
+sudo apt install docker.io
+sudo usermod -aG docker $USER       <span class="c"># luego cerrar sesión</span>
+docker run hello-world              <span class="c"># "Hello from Docker!"</span>
+
+<span class="c"># comandos básicos</span>
+docker pull nginx                   <span class="c"># descargar imagen</span>
+docker images                       <span class="c"># ver imágenes</span>
+docker ps        /  docker ps -a    <span class="c"># contenedores en marcha / todos</span>
+docker stop web  /  docker rm web   <span class="c"># parar / borrar contenedor</span>
+docker rmi nginx                    <span class="c"># borrar imagen</span>
+
+<span class="c"># web estática SIN Dockerfile (montando la carpeta)</span>
+docker run -d -p 8080:80 --name web -v "$(pwd)":/usr/share/nginx/html nginx
+<span class="c">#  -d = segundo plano · -p HOST:CONTENEDOR · --name nombre · -v carpeta:ruta</span></pre>
+
+<pre><span class="c"># Dockerfile para una web estática</span>
+FROM nginx:alpine
+COPY ./web /usr/share/nginx/html
+EXPOSE 80
+
+<span class="c"># construir la imagen y lanzar el contenedor</span>
+docker build -t miweb .
+docker run -d -p 8080:80 --name web miweb
+<span class="c"># abrir http://localhost:8080</span></pre>
+  <p class="small">Con Apache en vez de Nginx: <code>FROM httpd:2.4</code> y <code>COPY ./web /usr/local/apache2/htdocs/</code>.</p>
+
+  <h3>Una petición y una respuesta HTTP escritas</h3>
+<pre>GET /index.html HTTP/1.1          <span class="c">&lt;- método + URL + versión</span>
+Host: www.ejemplo.com             <span class="c">&lt;- cabeceras</span>
+User-Agent: Mozilla/5.0
+Accept-Language: es-ES
+
+HTTP/1.1 200 OK                   <span class="c">&lt;- versión + código + mensaje</span>
+Content-Type: text/html           <span class="c">&lt;- cabeceras</span>
+Content-Length: 1250
+
+&lt;html&gt;...&lt;/html&gt;                  <span class="c">&lt;- cuerpo</span></pre>
+</section>
+
+<section id="test">
+  <h2>8. Test de práctica</h2>
+  <p class="small">Pulsa una opción: se corrige al momento y te dice por qué. El marcador va abajo.</p>
+  <div id="quiz"></div>
+  <div class="score" role="status" aria-live="polite"><span id="scoreTxt">0 / 0 respondidas</span><button type="button" id="resetBtn">Empezar de nuevo</button></div>
+</section>
+
+<section id="cortas">
+  <h2>9. Preguntas cortas (con respuesta)</h2>
+  <p class="small">Intenta contestarla en voz alta y luego abre la respuesta.</p>
+  <details><summary>¿Qué es una arquitectura monolítica? Di una ventaja y un inconveniente.</summary><p>Toda la aplicación (interfaz, lógica y datos) se empaqueta y despliega como una única unidad. Ventaja: es sencilla de desarrollar y desplegar al principio. Inconveniente: para escalar una parte hay que escalar toda la aplicación, y un cambio en una parte puede afectar a todo (acoplamiento alto).</p></details>
+  <details><summary>Diferencia entre servidor web y servidor de aplicaciones, con un ejemplo de cada.</summary><p>El servidor web sirve contenido estático (HTML, CSS, imágenes) de forma rápida, por ejemplo Apache HTTP Server o Nginx. El servidor de aplicaciones ejecuta código para generar contenido dinámico y trabaja con la base de datos, por ejemplo Apache Tomcat para Java.</p></details>
+  <details><summary>¿Qué significa que HTTP es "sin estado"? ¿Cómo se mantiene una sesión?</summary><p>Cada petición es independiente y el servidor no recuerda las anteriores. Para mantener la sesión se usan cookies: el servidor envía una cookie de sesión con la cabecera Set-Cookie y el navegador la manda en cada petición siguiente.</p></details>
+  <details><summary>Partes de una petición HTTP y de una respuesta HTTP.</summary><p>Petición: método (GET, POST...), URL, versión del protocolo, cabeceras y cuerpo opcional. Respuesta: código de estado, mensaje de estado, cabeceras y cuerpo.</p></details>
+  <details><summary>¿Qué es HTTPS y qué tres cosas garantiza?</summary><p>Es HTTP funcionando sobre una capa de seguridad TLS/SSL. Al conectar se hace un handshake y el servidor se identifica con un certificado digital. Garantiza confidencialidad (nadie lee los datos), integridad (no se modifican) y autenticidad (el servidor es quien dice ser).</p></details>
+  <details><summary>Diferencia entre una máquina virtual y un contenedor.</summary><p>La VM incluye un sistema operativo completo y la gestiona un hipervisor: está totalmente aislada pero consume muchos recursos y arranca lento. El contenedor solo lleva la aplicación y sus dependencias y comparte el kernel del sistema anfitrión: es mucho más ligero y arranca en segundos, pero aísla algo menos.</p></details>
+  <details><summary>Define Dockerfile, imagen y contenedor.</summary><p>Dockerfile: archivo de texto con las instrucciones para construir una imagen. Imagen: plantilla inmutable con todo lo necesario para ejecutar la aplicación. Contenedor: instancia en ejecución de una imagen.</p></details>
+  <details><summary>Nombra los 5 requerimientos de implantación de una aplicación web.</summary><p>Entorno de ejecución (runtime), servidor web y/o de aplicaciones con sus puertos, base de datos, gestor de dependencias y variables de entorno.</p></details>
+  <details><summary>¿Por qué las claves API y contraseñas van en variables de entorno?</summary><p>Porque así no quedan escritas en el código (que se comparte y se sube a repositorios) y se pueden cambiar según el entorno (desarrollo o producción) sin tocar el código. Es una cuestión de seguridad.</p></details>
+  <details><summary>¿Qué debe incluir la documentación de una instalación?</summary><p>Prerrequisitos de hardware y red (RAM, CPU, puertos), los comandos exactos, las rutas de los archivos de configuración con el antes y el después, capturas de los pasos importantes y una sección de troubleshooting con errores comunes y su solución.</p></details>
+  <details><summary>¿Qué es un API Gateway y en qué modelo se usa?</summary><p>Es la puerta de entrada de la arquitectura de microservicios: recibe las peticiones del usuario y las reparte al microservicio que corresponda.</p></details>
+  <details><summary>¿Por qué un contenedor Linux no funciona directamente en Windows?</summary><p>Porque los contenedores comparten el kernel del sistema anfitrión y el contenedor necesita un kernel Linux. En Windows hace falta una VM ligera por medio (WSL2 en Docker Desktop).</p></details>
+  <details><summary>¿Qué haces si una web te pide la tarjeta de crédito y no tiene HTTPS?</summary><p>No meter los datos y salir de la web, porque viajarían en texto plano y cualquiera que intercepte el tráfico podría leerlos.</p></details>
+  <details><summary>Explica qué hacen estos comandos: docker run -d -p 8080:80 --name web nginx</summary><p>Crea y arranca un contenedor a partir de la imagen nginx, en segundo plano (-d), llamado "web" (--name), y conecta el puerto 8080 del equipo con el puerto 80 del contenedor (-p). Se accede con http://localhost:8080.</p></details>
+  <details><summary>¿En qué archivo cambias el puerto de Apache (Ubuntu) y el de Tomcat?</summary><p>Apache: <code>/etc/apache2/ports.conf</code> (directiva Listen) y el VirtualHost del sitio. En Windows, en <code>httpd.conf</code>. Tomcat: en <code>conf/server.xml</code>, atributo port del Connector HTTP/1.1 (por defecto 8080).</p></details>
+</section>
+</div>
+
+<script>
+const Q = [
+  ["¿Qué problema intenta evitar definir bien el entorno de una aplicación?", ["Que la aplicación ocupe mucho disco","El \"en mi máquina sí funcionaba\"","Que el código tenga errores de sintaxis","Que el usuario no entienda la interfaz"],1,"Es la frase con la que empieza el tema: la app no arranca en el servidor porque el entorno no está definido."],
+  ["El logotipo fijo de una web es un ejemplo de...", ["Archivo de configuración","Dependencia","Archivo estático","Backend"],2,"Los estáticos no cambian con la lógica: imágenes, vídeos, PDF, fuentes, CSS."],
+  ["Un driver de MySQL para Java es...", ["Un archivo estático","Una dependencia","Una variable de entorno","El runtime"],1,"Es código de terceros que usa la app: una dependencia (librería)."],
+  ["¿Dónde deben guardarse las claves API y contraseñas?", ["En el código fuente","En el HTML","En variables de entorno","En un archivo estático"],2,"Las variables de entorno son críticas para la seguridad: no se escriben en el código."],
+  ["Para una aplicación Java, el entorno de ejecución (runtime) es...", ["Maven","El JRE/JDK","Tomcat","MySQL"],1,"Runtime de Java = JRE/JDK. Maven es el gestor de dependencias y Tomcat el servidor."],
+  ["¿Cuál de estos es un gestor de dependencias de PHP?", ["npm","Maven","Composer","pip"],2,"npm → Node, Maven → Java, pip → Python, Composer → PHP."],
+  ["¿Qué capa contiene la lógica y las reglas de negocio?", ["Capa cliente","Capa de negocio","Capa de datos","Capa de red"],1,"Cliente = navegador, negocio = lógica, datos = almacenamiento."],
+  ["En el modelo monolítico...", ["Cada servicio tiene su propia base de datos","Todo se despliega como una única unidad","El cliente y el servidor usan lenguajes distintos","Hay un API Gateway"],1,"Monolítico = todo en uno. Si escalas, escalas toda la aplicación."],
+  ["Una ventaja del modelo monolítico es...", ["Escalabilidad independiente","Resiliencia ante fallos","Comunicación interna directa sin red","Flexibilidad tecnológica"],2,"Los componentes se comunican sin red, lo que puede ser más rápido."],
+  ["\"Un cambio en una parte puede afectar a todo el sistema\" describe...", ["El acoplamiento alto del monolito","La resiliencia de los microservicios","La seguridad centralizada","La portabilidad de los contenedores"],0,"Es la desventaja de acoplamiento alto del monolítico."],
+  ["Una ventaja del modelo cliente-servidor es...", ["No depende de la red","Seguridad centralizada en el servidor","No hay que gestionar el estado","Todo usa el mismo lenguaje"],1,"El servidor es el punto central de control de accesos y datos sensibles."],
+  ["En microservicios, el componente que recibe las peticiones y las reparte es...", ["El hipervisor","El API Gateway","El Dockerfile","El DocumentRoot"],1,"El API Gateway es la puerta de entrada a los microservicios."],
+  ["Si un microservicio falla, el resto sigue funcionando. Esto se llama...", ["Acoplamiento","Latencia","Resiliencia","Monolito"],2,"Resiliencia: un fallo no derriba toda la aplicación."],
+  ["Una desventaja de los microservicios es...", ["Escalabilidad limitada","Barrera tecnológica","Mantener la consistencia de datos entre varias BD","Que todo está en un mismo servidor"],2,"Cada microservicio tiene su BD y mantenerlas consistentes es difícil. Además hay más latencia y complejidad."],
+  ["HTTP es un protocolo...", ["Con estado","Sin estado (stateless)","Cifrado","Solo para imágenes"],1,"Cada petición es independiente; el servidor olvida las anteriores."],
+  ["¿Qué método HTTP se usa normalmente para enviar un formulario?", ["GET","POST","DELETE","HEAD"],1,"POST envía datos para procesar. GET solo pide."],
+  ["¿Qué método HTTP borra datos?", ["PUT","PATCH","DELETE","POST"],2,"PUT/PATCH actualizan y DELETE borra."],
+  ["¿Cuál de estas NO es una cabecera de petición del tema?", ["User-Agent","Accept-Language","Authorization","Content-Length"],3,"Content-Length aparece como cabecera de la respuesta. Las de petición del tema son User-Agent, Accept-Language y Authorization."],
+  ["El código 404 significa...", ["Error interno del servidor","Recurso no encontrado","Sin permiso","Movido permanentemente"],1,"404 Not Found, es un error del cliente (4xx)."],
+  ["El código 403 significa...", ["Forbidden (sin permiso)","Not Found","OK","Moved Permanently"],0,"403 Forbidden: el recurso existe pero no tienes permiso."],
+  ["Un código 500 indica...", ["Éxito","Redirección","Error del cliente","Error del servidor"],3,"5xx = error del servidor. 500 Internal Server Error."],
+  ["El código 301 es de la familia...", ["2xx éxito","3xx redirección","4xx cliente","5xx servidor"],1,"301 Moved Permanently: el recurso se ha movido."],
+  ["¿Qué cabecera de respuesta permite que la web te \"recuerde\" (sesión)?", ["Content-Type","Set-Cookie","User-Agent","Host"],1,"Con Set-Cookie el servidor da una cookie que el navegador reenvía en cada petición."],
+  ["HTTPS es...", ["Un protocolo nuevo que sustituye a HTTP","HTTP sobre una capa de seguridad TLS/SSL","Un tipo de servidor web","HTTP sin cabeceras"],1,"No es un protocolo nuevo: es HTTP sobre TLS/SSL."],
+  ["¿Qué garantiza que el servidor es quien dice ser en HTTPS?", ["El cuerpo de la respuesta","El certificado digital","El método GET","La cookie"],1,"Autenticidad: el certificado digital verifica la identidad del servidor."],
+  ["Que los datos no se modifiquen por el camino es...", ["Confidencialidad","Integridad","Autenticidad","Escalabilidad"],1,"Confidencialidad = nadie lo lee; integridad = no se altera; autenticidad = servidor verificado."],
+  ["El puerto por defecto de HTTPS es...", ["80","8080","443","22"],2,"HTTP 80, HTTPS 443, Tomcat 8080, SSH 22."],
+  ["¿Cuál es un servidor web (estático)?", ["Tomcat","Nginx","PHP-FPM","Gunicorn"],1,"Apache HTTP Server y Nginx son servidores web."],
+  ["Apache Tomcat sirve para aplicaciones...", ["PHP","Python","Java (servlets y JSP)","Node.js"],2,"Tomcat = Java. Gunicorn/uWSGI = Python, PHP-FPM = PHP, Node.js = JavaScript."],
+  ["Un servidor web tiene bajos requerimientos porque...", ["No necesita un runtime de lenguaje como Java o Python","No usa red","No usa disco","Funciona sin sistema operativo"],0,"Sirve archivos tal cual, sin ejecutar código de un lenguaje."],
+  ["Cuando el servidor web recibe una petición dinámica y se la pasa al de aplicaciones, actúa como...", ["Hipervisor","Proxy","Contenedor","Cliente"],1,"El servidor web hace de proxy hacia el servidor de aplicaciones."],
+  ["¿Qué gestiona las máquinas virtuales?", ["El kernel compartido","El hipervisor","El API Gateway","El Dockerfile"],1,"El hipervisor (VirtualBox, VMware) gestiona las VMs y añade algo de sobrecarga."],
+  ["Una ventaja de las máquinas virtuales es...", ["Arrancan en segundos","Ocupan muy poco","Aislamiento total","Comparten el kernel"],2,"Las VMs están completamente aisladas. Son pesadas y lentas de arrancar."],
+  ["La gran diferencia de un contenedor respecto a una VM es que...", ["Tiene su propio SO completo","Comparte el kernel del SO anfitrión","Necesita más RAM","Solo funciona en la nube"],1,"No lleva SO completo: comparte el kernel del host, por eso es tan ligero."],
+  ["Una desventaja de los contenedores frente a las VMs es...", ["Arranque lento","Menor aislamiento","Ocupan varios GB","No son portables"],1,"Al compartir el kernel, el aislamiento no es tan total como el de una VM."],
+  ["En Docker, una plantilla inmutable con todo lo necesario para ejecutar la app es...", ["El contenedor","La imagen","El Dockerfile","El volumen"],1,"Dockerfile → construye la imagen (plantilla inmutable) → de ella se crean contenedores."],
+  ["Un contenedor es...", ["Un archivo de texto con instrucciones","Una instancia ejecutable de una imagen","Una máquina virtual","Un servidor web"],1,"El contenedor es la imagen en ejecución."],
+  ["AWS, GCP y Azure son...", ["Servidores de aplicaciones","Proveedores de nube","Gestores de dependencias","Hipervisores locales"],1,"Amazon, Google y Microsoft: alquilan VMs y servicios con pago por uso."],
+  ["En docker run -p 8080:80, el 8080 es...", ["El puerto del contenedor","El puerto del equipo anfitrión","La versión de Docker","El número de contenedores"],1,"-p HOST:CONTENEDOR. Entras por localhost:8080 y llega al 80 del contenedor."],
+  ["¿En qué archivo se cambia el puerto HTTP de Tomcat?", ["httpd.conf","ports.conf","server.xml","web.xml"],2,"conf/server.xml, en el Connector HTTP/1.1 (por defecto 8080)."],
+  ["En Apache sobre Ubuntu, ¿qué comando comprueba la sintaxis de la configuración?", ["apache2ctl configtest","systemctl enable apache2","apt update","ufw status"],0,"Si todo está bien devuelve \"Syntax OK\"."],
+  ["Un elemento de una buena documentación es...", ["Explicar solo el resultado final","Los comandos exactos y el antes/después de la configuración","Evitar capturas","No mencionar errores"],1,"Prerrequisitos, comandos exactos, rutas con antes/después, capturas y troubleshooting."]
+];
+
+const quiz = document.getElementById('quiz');
+const scoreTxt = document.getElementById('scoreTxt');
+let answered = 0, right = 0;
+
+function render(){
+  quiz.innerHTML = '';
+  answered = 0; right = 0; updateScore();
+  Q.forEach(([text, opts, ok, why], i) => {
+    const box = document.createElement('div'); box.className = 'q';
+    const t = document.createElement('div'); t.className = 'qt';
+    t.innerHTML = '<span class="num">' + (i + 1) + '.</span>';
+    t.appendChild(document.createTextNode(text));
+    const list = document.createElement('div'); list.className = 'opts';
+    const w = document.createElement('div'); w.className = 'why'; w.hidden = true;
+    opts.forEach((o, j) => {
+      const b = document.createElement('button'); b.type = 'button';
+      b.textContent = String.fromCharCode(97 + j) + ') ' + o;
+      b.addEventListener('click', () => {
+        list.querySelectorAll('button').forEach((x, k) => { x.disabled = true; if (k === ok) x.classList.add('ok'); });
+        if (j !== ok) b.classList.add('bad'); else right++;
+        answered++; updateScore();
+        w.textContent = (j === ok ? 'Bien. ' : 'Fallo. ') + why; w.hidden = false;
+      });
+      list.appendChild(b);
+    });
+    box.append(t, list, w); quiz.appendChild(box);
+  });
+}
+function updateScore(){
+  const nota = answered ? (right / answered * 10).toFixed(1) : '–';
+  scoreTxt.textContent = answered + ' / ' + Q.length + ' respondidas · ' + right + ' bien · nota ' + nota;
+}
+document.getElementById('resetBtn').addEventListener('click', render);
+render();
+</script>
+
+</body></html>
